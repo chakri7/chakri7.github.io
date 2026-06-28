@@ -3,133 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chakradhar D | Senior Software Engineer</title>
-    <!-- Tailwind CSS v3 Play CDN for flawless cross-browser compatibility -->
+    <title>Chakradhar D | Senior Backend & Distributed Systems Engineer (FAANG)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap');
         body { 
-            background-color: #0B0F19; 
+            background-color: #050811; 
             font-family: 'Inter', sans-serif; 
         }
         .mono-font {
             font-family: 'JetBrains Mono', monospace;
         }
-        .terminal-glow { 
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.12); 
+        .dashboard-card {
+            background: linear-gradient(145deg, #0a101f, #060a14);
+            border: 1px solid #1e293b;
         }
     </style>
 </head>
 <body class="text-slate-300 antialiased selection:bg-emerald-500 selection:text-black">
 
-    <!-- HERO SECTION -->
-    <section class="min-h-screen flex flex-col justify-center max-w-5xl mx-auto px-6 py-20">
-        <div class="mb-6 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-800/60 border border-slate-700 text-sm text-emerald-400 mono-font w-fit">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Open to Relocation (Dublin / Berlin)
-        </div>
+    <!-- MAIN DASHBOARD WRAPPER -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
-        <h1 class="text-5xl md:text-7xl font-bold tracking-tight text-white mb-4">
-            CHAKRADHAR D
-        </h1>
-        <h2 class="text-2xl md:text-3xl font-semibold text-emerald-400 mb-6">
-            Senior Software Engineer
-        </h2>
-        
-        <p class="text-lg text-slate-400 max-w-2xl mb-12 leading-relaxed">
-            I architect high-performance distributed backend systems, financial tracking platforms, and highly ergonomic APIs using <span class="text-white font-medium">Java</span>, <span class="text-white font-medium">TypeScript</span>, and <span class="text-white font-medium">AWS</span>. Expert in scaling enterprise microservices, event-driven architectures, and system diagnostics.
-        </p>
-
-        <!-- TERMINAL INTERFACE -->
-        <div class="w-full bg-slate-900/80 border border-slate-800 rounded-lg overflow-hidden mono-font text-sm terminal-glow mb-12">
-            <div class="bg-slate-950 px-4 py-3 border-b border-slate-800 flex items-center gap-2">
-                <span class="w-3 h-3 rounded-full bg-red-500/80"></span>
-                <span class="w-3 h-3 rounded-full bg-yellow-500/80"></span>
-                <span class="w-3 h-3 rounded-full bg-emerald-500/80"></span>
-                <span class="ml-2 text-xs text-slate-500">chakradhar_debug_session.log</span>
-            </div>
-            <div class="p-6 space-y-4 text-emerald-400/90">
-                <div><span class="text-slate-500">~$</span> cat summary.json</div>
-                <div class="text-slate-400 pl-4">
-                    { <br>
-                    &nbsp;&nbsp;"experience": "5+ Years", <br>
-                    &nbsp;&nbsp;"core_focus": ["Distributed Backend Systems", "Financial Ledger Scale", "API Infrastructure"], <br>
-                    &nbsp;&nbsp;"latest_impact": "Reduced CI/CD setup time by 75% via GenAI code validation pipeline" <br>
-                    }
+        <!-- TOP-LEVEL ARCHITECTURE STATUS HEADER -->
+        <header class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 pb-6 border-b border-slate-800 mb-8">
+            <div>
+                <div class="flex flex-wrap items-center gap-3">
+                    <h1 class="text-3xl font-extrabold tracking-tight text-white font-mono">CHAKRADHAR D</h1>
+                    <span class="px-2.5 py-0.5 rounded text-xs bg-amber-500/10 text-amber-400 border border-amber-500/20 font-mono font-semibold uppercase tracking-wider">CURRENTLY FAANG (AMAZON)</span>
                 </div>
-                <div><span class="text-slate-500">~$</span> check --system-health</div>
-                <div class="text-slate-300 pl-4"><span class="text-emerald-500">✔</span> Diagnosed 90% staging failure rate by fixing connection pool configurations.</div>
-                <div class="text-slate-300 pl-4"><span class="text-emerald-500">✔</span> Restored legacy multi-team CI/CD token authentication integrations.</div>
+                <p class="text-slate-400 text-sm mt-1.5 font-mono">
+                    Specialization: Distributed Systems & APIs // GenAI Production Automation // Financial Ledger Scale
+                </p>
             </div>
-        </div>
-
-        <div class="flex flex-wrap gap-4 mono-font text-sm">
-            <a href="mailto:dchakri123@gmail.com" class="px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-black font-semibold rounded transition-all">
-                get_in_touch()
-            </a>
-            <a href="https://github.com/chakri7" target="_blank" class="px-6 py-3 border border-slate-700 hover:border-slate-500 rounded transition-all text-slate-300">
-                view_github()
-            </a>
-        </div>
-    </section>
-
-    <!-- CORE TECH STACK -->
-    <section class="max-w-5xl mx-auto px-6 py-20 border-t border-slate-900">
-        <h3 class="text-xs font-semibold tracking-widest text-emerald-400 uppercase mb-8 mono-font">01 // Core Specializations</h3>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div class="p-6 bg-slate-900/40 border border-slate-800 rounded shadow-sm">
-                <div class="text-white font-semibold mb-3">Backend & APIs</div>
-                <p class="text-sm text-slate-400 mono-font leading-relaxed">Java, TypeScript, Go, Spring Boot, Spring Cloud, RESTful APIs, gRPC, Microservices, Jackson Data Processing.</p>
-            </div>
-            <div class="p-6 bg-slate-900/40 border border-slate-800 rounded shadow-sm">
-                <div class="text-white font-semibold mb-3">Cloud & Infrastructure</div>
-                <p class="text-sm text-slate-400 mono-font leading-relaxed">AWS (Lambda, DynamoDB, S3, SNS, SQS), Docker, Kubernetes, CI/CD Pipelines, Infrastructure-as-Code (IaC), Gradle, Maven.</p>
-            </div>
-            <div class="p-6 bg-slate-900/40 border border-slate-800 rounded shadow-sm">
-                <div class="text-white font-semibold mb-3">AI & Automation Systems</div>
-                <p class="text-sm text-slate-400 mono-font leading-relaxed">LLM Agents, Semantic Code RAG Pipelines, Prompt Engineering, Automated Production Integration Test Generation.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SYSTEM OUTCOME / TIMELINE -->
-    <section class="max-w-5xl mx-auto px-6 py-20 border-t border-slate-900">
-        <h3 class="text-xs font-semibold tracking-widest text-emerald-400 uppercase mb-12 mono-font">02 // Production History</h3>
-        
-        <div class="space-y-12">
-            <!-- AMAZON -->
-            <div class="relative pl-6 border-l border-slate-800 group">
-                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-slate-700 group-hover:bg-emerald-400 transition-all"></div>
-                <div class="flex flex-wrap items-baseline justify-between mb-2">
-                    <h4 class="text-xl font-bold text-white">Amazon</h4>
-                    <span class="text-sm mono-font text-slate-500">Oct 2022 - Present</span>
+            <div class="flex flex-wrap gap-2.5 mono-font text-xs w-full lg:w-auto justify-start lg:justify-end">
+                <div class="px-3 py-1.5 rounded bg-slate-900/80 border border-slate-800 text-slate-400 flex items-center gap-2">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Open to Relocation Across Europe / EU
                 </div>
-                <div class="text-sm mono-font text-slate-400 mb-4">Software Development Engineer</div>
-                <ul class="text-slate-400 text-sm space-y-2 list-disc list-inside">
-                    <li>Spearheaded billing automation and core ledger infrastructure for a <span class="text-white font-medium">$21.9M</span> contract, dropping month-end financial reconciliation from 5 days to 2.</li>
-                    <li>Designed an orchestration pipeline generating 7-tool GenAI validation scripts, dropping integration setup by <span class="text-white font-medium">75%</span>.</li>
-                    <li>Architected an EU compliance platform deploying high-throughput DynamoDB storage alongside event-driven pipelines.</li>
-                </ul>
+                <a href="mailto:dchakri123@gmail.com" class="px-3 py-1.5 rounded bg-emerald-500 hover:bg-emerald-400 text-black font-semibold transition-all">dchakri123@gmail.com</a>
+                <a href="https://github.com/chakri7" target="_blank" class="px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-white transition-all">GitHub Profile</a>
             </div>
+        </header>
 
-            <!-- NUAWOMAN -->
-            <div class="relative pl-6 border-l border-slate-800 group">
-                <div class="absolute -left-[5px] top-1.5 w-2 h-2 rounded-full bg-slate-700 group-hover:bg-emerald-400 transition-all"></div>
-                <div class="flex flex-wrap items-baseline justify-between mb-2">
-                    <h4 class="text-xl font-bold text-white">Nuawoman</h4>
-                    <span class="text-sm mono-font text-slate-500">July 2021 - Sept 2022</span>
+        <!-- HIGH-DENSITY ARCHITECTURAL METRICS GRID -->
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div class="dashboard-card rounded p-5">
+                <div class="text-slate-500 mono-font text-[10px] uppercase tracking-wider">Financial Transactions</div>
+                <div class="text-2xl font-bold text-white mt-1.5 font-mono">$21.9M</div>
+                <div class="text-[11px] text-slate-400 mt-1">Multi-Region Scale Engineered</div>
+            </div>
+            <div class="dashboard-card rounded p-5">
+                <div class="text-slate-500 mono-font text-[10px] uppercase tracking-wider">GenAI Test Automation</div>
+                <div class="text-2xl font-bold text-emerald-400 mt-1.5 font-mono">-75%</div>
+                <div class="text-[11px] text-slate-400 mt-1">CI/CD Setup Pipeline Time</div>
+            </div>
+            <div class="dashboard-card rounded p-5">
+                <div class="text-slate-500 mono-font text-[10px] uppercase tracking-wider">Staging Stability</div>
+                <div class="text-2xl font-bold text-red-400 mt-1.5 font-mono">90% to 0%</div>
+                <div class="text-[11px] text-slate-400 mt-1">Connection Pool Fault Resolution</div>
+            </div>
+            <div class="dashboard-card rounded p-5">
+                <div class="text-slate-500 mono-font text-[10px] uppercase tracking-wider">Monolith Decomposition</div>
+                <div class="text-2xl font-bold text-white mt-1.5 font-mono">50% Faster</div>
+                <div class="text-[11px] text-slate-400 mt-1">Cross-Team Code Ship Cycle</div>
+            </div>
+        </section>
+
+        <!-- TWO-COLUMN TECHNICAL MATRIX OVERVIEW -->
+        <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+            
+            <!-- LEFT PANEL: DRIVE & TECHNOLOGY SPECIFICATION -->
+            <div class="space-y-6 lg:col-span-1">
+                
+                <!-- PROFILE MOTIVATION & DRIVE SECTION -->
+                <div class="dashboard-card rounded p-5 border-l-2 border-emerald-500">
+                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase mono-font mb-3 text-white">// CAREER MOTIVATION</h3>
+                    <p class="text-xs text-slate-300 leading-relaxed space-y-2 font-sans">
+                        I am a highly motivated, high-initiative engineer who thrives on owning complex, ambiguous problems from architectural discovery through production launch. Operating daily within an intense, high-scale **FAANG ecosystem**, I have developed a deep bias for action and a strict standard for operational excellence. 
+                        <br><br>
+                        I love designing robust API abstractions and writing clean code that stays resilient even during traffic spikes or network partitions. I am looking to bring this same energy and execution speed to a leading engineering team in Europe.
+                    </p>
                 </div>
-                <div class="text-sm mono-font text-slate-400 mb-4">Software Development Engineer</div>
-                <ul class="text-slate-400 text-sm space-y-2 list-disc list-inside">
-                    <li>Decomposed monolithic modules using domain-driven design parameters to deliver decoupled Spring microservices, lowering cycle deployment patterns by <span class="text-white font-medium">50%</span>.</li>
-                </ul>
-            </div>
-        </div>
-    </section>
 
-    <!-- FOOTER -->
-    <footer class="max-w-5xl mx-auto px-6 py-12 border-t border-slate-900 text-center mono-font text-xs text-slate-600">
-        Built with clean CSS & Semantic markup. No heavy runtime frameworks required. &copy; 2026.
-    </footer>
+                <!-- VERIFIED TECH STACK MODULES -->
+                <div class="dashboard-card rounded p-5">
+                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase mono-font mb-4 border-b border-slate-800 pb-2 text-emerald-400">// CORE PRODUCTION TOOLS</h3>
+                    <div class="space-y-4 text-xs">
+                        <div>
+                            <span class="text-slate-400 font-medium block mb-1.5 font-mono text-[11px]">Backend Runtimes & Languages:</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Java 17/21</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">TypeScript</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Go</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Python</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-medium block mb-1.5 font-mono text-[11px]">Distributed Architecture & Frameworks:</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Spring Boot</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">gRPC / RESTful APIs</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Microservices</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">AWS SNS/SQS (Event-Driven)</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">DynamoDB / Oracle SQL</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-medium block mb-1.5 font-mono text-[11px]">Infrastructure, Containerization & CI/CD:</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Docker</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Kubernetes</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Infrastructure-as-Code (AWS CDK)</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Maven / Gradle / Git</span>
+                            </div>
+                        </div>
+                        <div>
+                            <span class="text-slate-400 font-medium block mb-1.5 font-mono text-[11px]">GenAI & Intelligent Systems:</span>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">LLM Tool Chaining</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Semantic Retrieval (RAG)</span>
+                                <span class="bg-slate-900 border border-slate-800 px-2 py-0.5 rounded text-slate-300 font-mono">Code Context Ingestion</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL: VERIFIED WORK EVIDENCE & METRICS -->
+            <div class="space-y-6 lg:col-span-2">
+                
+                <!-- TERMINAL CODE ENGINE CONTAINER -->
+                <div class="w-full bg-slate-950 border border-slate-800 rounded overflow-hidden mono-font text-xs">
+                    <div class="bg-slate-900/60 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-red-500/60"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500/60"></span>
+                            <span class="text-slate-400 ml-1 text-[11px]">production_systems_telemetry.sh</span>
+                        </div>
+                    </div>
+                    <div class="p-5 space-y-4 text-slate-300 leading-relaxed text-[11px]">
+                        <div>
+                            <span class="text-emerald-400 font-bold">chakradhar@faang-node:~$</span> ./verify_genai_automation
+                            <p class="text-slate-400 mt-1 pl-4">
+                                <span class="text-purple-400">[RAG Engine]</span> Chaining 7 specialized LLM tools to parse architecture diagrams, logs, and abstract syntax trees. <br>
+                                <span class="text-emerald-500">[Result]</span> Automatically outputs stable, enterprise integration test suites, reducing project environment setup times from 6 weeks to under 2 weeks (<span class="text-white font-medium">75% timeline improvement</span>).
+                            </p>
+                        </div>
+                        <div>
+                            <span class="text-emerald-400 font-bold">chakradhar@faang-node:~$</span> ./inspect_ledger_scale
+                            <p class="text-slate-400 mt-1 pl-4">
+                                <span class="text-blue-400">[Scale]</span> Auditing data pipelines handling a <span class="text-white">$21.9M</span> enterprise asset block across 4 global geographic AWS regions.<br>
+                                <span class="text-emerald-500">[Result]</span> Optimized microservice transport and multi-region data persistence layers, cutting month-end database reconciliation timelines from 5 days to 2.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DETAILED WORK HIGHLIGHTS -->
+                <div class="dashboard-card rounded p-5">
+                    <h3 class="text-xs font-bold tracking-wider text-slate-400 uppercase mono-font mb-5 border-b border-slate-800 pb-2 text-emerald-400">// SENIOR TRACK IMPACT RECORD</h3>
+                    
+                    <div class="space-y-6">
+                        <!-- AMAZON -->
+                        <div>
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-baseline mb-1">
+                                <h4 class="text-base font-bold text-white font-mono">Amazon — Software Development Engineer</h4>
+                                <span class="text-xs mono-font text-slate-500 mt-0.5 sm:mt-0">Oct 2022 - Present</span>
+                            </div>
+                            <p class="text-xs text-emerald-400 mono-font mb-2.5">Distributed Backend Infrastructure, Transaction Scale & GenAI Architecture</p>
+                            <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside font-sans">
+                               <li><strong class="text-slate-200">System Optimization:</strong> Led the architectural overhaul of an automated validation agent system, iterating through multiple technical designs to replace fragile template engines with fully production-grade code-generation logic.</li>
+                               <li><strong class="text-slate-200">Regulatory Architecture:</strong> End-to-end owner for an EU regulatory privacy and consent data platform, deploying stateless event notification pathways over high-throughput AWS SQS/SNS infrastructure alongside a decoupled governance interface.</li>
+                               <li><strong class="text-slate-200">Critical Incident Resolution:</strong> Diagnosed a 90% staging environment failure block by inspecting low-level transport layer bottlenecks and correcting deep connection pool parameters between application load balancers and Java microservices.</li>
+                               <li><strong class="text-slate-200">Engineering Leadership:</strong> Served as the primary system design consultant for cross-functional partner engineering teams, defining documentation frameworks and structural code guidelines to unblock major multi-service cloud migrations with zero customer downtime.</li>
+                            </ul>
+                        </div>
+
+                        <!-- NUAWOMAN -->
+                        <div class="pt-4 border-t border-slate-900">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-baseline mb-1">
+                                <h4 class="text-base font-bold text-white font-mono">Nuawoman — Software Development Engineer</h4>
+                                <span class="text-xs mono-font text-slate-500 mt-0.5 sm:mt-0">July 2021 - Sept 2022</span>
+                            </div>
+                            <p class="text-xs text-emerald-400 mono-font mb-2.5">Domain-Driven Microservices & Transaction Security</p>
+                            <ul class="text-xs text-slate-400 space-y-2 list-disc list-inside font-sans">
+                               <li><strong class="text-slate-200">Monolith Decomposition:</strong> Separated a tightly coupled legacy application architecture into independent order, warehouse, and subscription microservices (Java / Spring Boot), minimizing cross-team deployment dependencies and cutting ship cycles by 50%.</li>
+                               <li><strong class="text-slate-200">Payment Orchestration:</strong> Engineered highly secure recurring e-commerce transaction workflows and payment-link generator APIs, substantially mitigating failed delivery rates and checkout drops.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- FOOTER ARCHITECTURE TAG -->
+        <footer class="mt-12 pt-5 border-t border-slate-900 text-center mono-font text-[10px] text-slate-600">
+            Node: FAANG_Production_Instance // Server Status: Stable // &copy; 2026.
+        </footer>
+
+    </main>
 
 </body>
 </html>

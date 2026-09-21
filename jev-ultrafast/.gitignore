@@ -1,0 +1,7 @@
+.env
+artifacts/
+.venv/
+__pycache__/
+*.pyc
+.browser-harness/
+.venv

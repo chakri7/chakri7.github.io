@@ -98,7 +98,9 @@ function render() {
   const isolated = /247freepoker\.com/i.test(page.url || "") && /frame\.html/i.test(page.url || "");
   $("url").textContent = isolated
     ? `WRONG TAB isolated loader · ${page.url}`
-    : page.url;
+    : page.iframe_url
+      ? `${page.url}  ·  iframe ${page.iframe_url}`
+      : page.url;
   $("page-title").textContent = isolated
     ? "Isolated game/frame.html (static loader)"
     : page.title;

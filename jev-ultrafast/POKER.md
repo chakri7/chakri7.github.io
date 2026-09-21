@@ -12,9 +12,9 @@ This tree is [Browser Use’s Jev Ultrafast](https://github.com/browser-use/jev-
 
 `game/frame.html` is **not** a playable page by itself. Its boot script does `window.parent.games247.gameSupport.ready(...)`, which loads `js/game.js`. Opened as a top-level URL, `parent.games247` is missing, so CreateJS never starts and you only see the static “247 GAMES / LOADING…” art.
 
-Checked live (HTTP + CDP, 2026-09-21): **the homepage does not redirect**. `https://www.247freepoker.com/` stays 200 with no `Location` header and no `location.assign` / `top.location` in page scripts. For 24s after load, `location.href` remained the homepage. The site **embeds** the game (`<iframe id="app-player-cjs-frame" src="game/frame.html?v=…">`). That iframe uses the same yellow loader art, then `game.js` paints PLAY.
+Checked live over CDP: **no bot wall, no top-level redirect**. `navigator.webdriver` is false. Homepage JS has no `webdriver` / Cloudflare / Datadome check. HTTP 200, no `Location` header.
 
-The Windows launcher starts **Chrome in debug mode on about:blank**, then **Browser Use** at `http://127.0.0.1:8766/?scenario=poker`. Poker is a **screenshot inside that inspector**, not a raw Chrome tab of 247freepoker. Do not watch the 247 site window.
+What *does* happen: the homepage **hardcodes** `<iframe id="app-player-cjs-frame" src="game/frame.html">`. That is the player, not a route. Chrome’s debugger also lists that iframe document as a target titled **247 Game Frame**. Browser Harness `attach_first_page` can grab that iframe first (`pages[0]`), which *is* isolated `frame.html` with no `parent.games247` — static loader. The inspector now pins `Page.getFrameTree` to the **parent** URL and shows `iframe …/game/frame.html` beside it. Parent `gameSupport.ready()` is forced so ads/adblock cannot skip `game.js`.
 
 The table, cards, and Fold / Call / Raise are still a **CreateJS canvas** after boot. They are not HTML buttons. `#pause-overlay` (“Press here to play!”) is the DOM click inside the iframe.
 

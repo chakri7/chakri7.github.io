@@ -120,6 +120,8 @@
   if (scrollY+innerHeight<height-2) actions.push({id:'scroll_down',kind:'scroll',label:'Scroll down',delta:560});
   if (scrollY>0) actions.push({id:'scroll_up',kind:'scroll',label:'Scroll up',delta:-560});
   actions.push({id:'wait',kind:'wait',label:'Wait for the page to update'});
+  const iframe=document.querySelector('#app-player-cjs-frame, iframe');
   return {url:location.href,title:document.title,w:innerWidth,h:innerHeight,text,
+    iframe_url:iframe && iframe.src || null,
     scroll:{y:scrollY,height},actions,marker,page_key,guards,omitted_actions};
 })()

@@ -80,25 +80,36 @@ class Browser:
             href = self.evaluate("location.href") or ""
         except StalePage:
             href = ""
+        href = self._top_frame_url() or href
         if _is_isolated_poker_frame(href):
             self.call("Page.navigate", url=POKER_HOME)
             self._wait_ready(15)
-            href = POKER_HOME
+            href = self._top_frame_url() or POKER_HOME
         if "247freepoker.com" in href.lower():
-            self._close_stray_isolated_frames()
+            self._boot_createjs()
             self._wait_poker_iframe(20)
 
-    def _close_stray_isolated_frames(self):
-        """Isolated top-level game/frame.html tabs are leftover loaders, not the live table."""
+    def _boot_createjs(self):
+        """Parent handshake loads game.js into the iframe. Ads/adblock can skip it."""
         try:
-            infos = cdp("Target.getTargets").get("targetInfos") or []
+            self.evaluate(
+                """(() => {
+                  const g = window.games247 && window.games247.gameSupport;
+                  if (!g) return false;
+                  g.isReady = true;
+                  if (typeof g.ready === 'function') g.ready();
+                  return true;
+                })()"""
+            )
+        except StalePage:
+            pass
+
+    def _top_frame_url(self):
+        try:
+            tree = self.call("Page.getFrameTree")
+            return (((tree or {}).get("frameTree") or {}).get("frame") or {}).get("url") or ""
         except Exception:
-            return
-        for info in infos:
-            if info.get("targetId") == self.target or info.get("type") != "page":
-                continue
-            if _is_isolated_poker_frame(info.get("url")):
-                cdp("Target.closeTarget", targetId=info["targetId"])
+            return ""
 
     def call(self, method, **params):
         return cdp(method, session_id=self.session, **params)
@@ -147,7 +158,7 @@ class Browser:
                 page = browser_operation(
                     {"operation": "observe", "session": self.session, "screenshot": screenshot}
                 )
-                if _is_isolated_poker_frame(page.get("url")):
+                if _is_isolated_poker_frame(page.get("url")) or _is_isolated_poker_frame(self._top_frame_url()):
                     self.open_page(POKER_HOME)
                     continue
                 return page

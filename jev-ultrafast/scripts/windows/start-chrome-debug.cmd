@@ -30,7 +30,7 @@ echo Opening about:blank  (poker loads inside Browser Use, not this tab)
 echo Profile: %PROFILE%
 echo Binary: %CHROME%
 
-start "Chrome Jev Debug" "%CHROME%" --remote-debugging-port=%PORT% --user-data-dir="%PROFILE%" --no-first-run --no-default-browser-check --disable-session-crashed-bubble --hide-crash-restore-bubble --window-size=1280,840 --window-position=40,40 --disable-gpu about:blank
+start "Chrome Jev Debug" "%CHROME%" --remote-debugging-port=%PORT% --user-data-dir="%PROFILE%" --no-first-run --no-default-browser-check --disable-session-crashed-bubble --hide-crash-restore-bubble --disable-site-isolation-trials --disable-features=IsolateOrigins,site-per-process --window-size=1280,840 --window-position=40,40 --disable-gpu about:blank
 
 set /a tries=0
 :wait

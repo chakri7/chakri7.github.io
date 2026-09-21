@@ -1,0 +1,4 @@
+jev-ultrafast/.env
+jev-ultrafast/artifacts/
+jev-ultrafast/.venv/
+__pycache__/

@@ -1,0 +1,28 @@
+{
+  "url": "https://www.247freepoker.com/game/frame.html",
+  "title": "247 Game Frame",
+  "text_preview": "Press here to play!\nLOADING...",
+  "action_count": 2,
+  "actions": [
+    {
+      "id": "e1",
+      "kind": "click",
+      "role": "button",
+      "label": "Press here to play!",
+      "rect": {
+        "x": 0,
+        "y": 0,
+        "w": 1120.508056640625,
+        "h": 780.1905517578125
+      }
+    },
+    {
+      "id": "wait",
+      "kind": "wait",
+      "role": null,
+      "label": "Wait for the page to update",
+      "rect": null
+    }
+  ],
+  "has_fold_call_raise_dom": false
+}

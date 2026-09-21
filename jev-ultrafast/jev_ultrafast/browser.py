@@ -89,6 +89,30 @@ class Browser:
             self._close_stray_isolated_frames()
             cdp("Target.activateTarget", targetId=self.target)
             self._wait_poker_iframe(20)
+            self._mark_poker_homepage()
+
+    def _mark_poker_homepage(self):
+        """Green bar + tab title so the iframe is not mistaken for a redirect."""
+        try:
+            self.evaluate(
+                """(() => {
+                  document.title = 'JEV LIVE POKER · homepage';
+                  let b = document.getElementById('jev-poker-banner');
+                  if (!b) {
+                    b = document.createElement('div');
+                    b.id = 'jev-poker-banner';
+                    document.documentElement.appendChild(b);
+                  }
+                  b.textContent = 'JEV live homepage  ' + location.href
+                    + '  |  the yellow/green game below is an iframe (game/frame.html). That is normal.';
+                  b.setAttribute('style',
+                    'position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#39ff14;color:#111;'
+                    + 'font:700 15px/1.35 sans-serif;padding:10px 12px;text-align:center;pointer-events:none');
+                  return location.href;
+                })()"""
+            )
+        except StalePage:
+            pass
 
     def _close_stray_isolated_frames(self):
         """Isolated top-level game/frame.html tabs are leftover loaders, not the live table."""

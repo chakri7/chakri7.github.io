@@ -12,7 +12,11 @@ This tree is [Browser Use’s Jev Ultrafast](https://github.com/browser-use/jev-
 
 `game/frame.html` is **not** a playable page by itself. Its boot script does `window.parent.games247.gameSupport.ready(...)`, which loads `js/game.js`. Opened as a top-level URL, `parent.games247` is missing, so CreateJS never starts and you only see the static “247 GAMES / LOADING…” art.
 
-Checked live (HTTP + CDP, 2026-09-21): **the homepage does not redirect**. `https://www.247freepoker.com/` stays 200 with no `Location` header and no `location.assign` / `top.location` in page scripts. For 24s after load, `location.href` remained the homepage. The site **embeds** the game (`<iframe id="app-player-cjs-frame" src="game/frame.html?v=…">`). That iframe uses the same yellow loader art, then `game.js` paints PLAY. A leftover Chrome tab titled **247 Game Frame** is a previous top-level open of `frame.html`, not a redirect. The agent now closes those stray tabs and brings the homepage tab to the front.
+Checked live (HTTP + CDP, 2026-09-21): **the homepage does not redirect**. `https://www.247freepoker.com/` stays 200 with no `Location` header and no `location.assign` / `top.location` in page scripts. For 24s after load, `location.href` remained the homepage. The site **embeds** the game (`<iframe id="app-player-cjs-frame" src="game/frame.html?v=…">`). That iframe uses the same yellow loader art, then `game.js` paints PLAY.
+
+If Chrome shows a **247 FREE POKER** header plus yellow/green game art, you are already on the homepage. Isolated `game/frame.html` has **no** site header and the tab title is **247 Game Frame**. After autostart, a **lime-green JEV banner** is injected on the homepage so those two cannot be confused.
+
+The Windows launcher **closes every Chrome window**, wipes `%TEMP%\chrome-jev-debug`, prints the debug tab list (must include the homepage), and opens the inspector in that same profile.
 
 The table, cards, and Fold / Call / Raise are still a **CreateJS canvas** after boot. They are not HTML buttons. `#pause-overlay` (“Press here to play!”) is the DOM click inside the iframe.
 

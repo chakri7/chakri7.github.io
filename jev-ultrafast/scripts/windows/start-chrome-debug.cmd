@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableExtensions
-rem Dedicated CDP Chrome. Kill leftover debug Chrome first — re-running without
-rem that leaves the old 247 Game Frame tab in front.
+rem Dedicated CDP Chrome. Close EVERY Chrome window first so an old
+rem "247 Game Frame" tab cannot stay in front of the live homepage.
 
 set "PORT=9222"
 set "PROFILE=%TEMP%\chrome-jev-debug"
@@ -17,9 +17,9 @@ if not defined CHROME (
   exit /b 1
 )
 
-echo Killing leftover Chrome that used profile chrome-jev-debug
-powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'chrome' -and $_.CommandLine -and ($_.CommandLine -like '*chrome-jev-debug*') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"
-timeout /t 2 /nobreak >nul
+echo Closing ALL Chrome windows (old Game Frame tabs hide the live table).
+taskkill /F /IM chrome.exe /T >nul 2>&1
+timeout /t 3 /nobreak >nul
 
 if exist "%PROFILE%" (
   echo Wiping debug profile %PROFILE%
@@ -28,11 +28,12 @@ if exist "%PROFILE%" (
 mkdir "%PROFILE%"
 
 echo Starting Chrome debugging on port %PORT%
-echo Opening %POKER%  ^(not game/frame.html^)
+echo Opening %POKER%  (not game/frame.html)
 echo Profile: %PROFILE%
 echo Binary: %CHROME%
+echo Look at THIS new window only. Taskbar title becomes: JEV LIVE POKER homepage
 
-start "Chrome Jev Debug" "%CHROME%" --remote-debugging-port=%PORT% --user-data-dir="%PROFILE%" --no-first-run --no-default-browser-check --disable-session-crashed-bubble --hide-crash-restore-bubble --disable-gpu "%POKER%"
+start "Chrome Jev Debug" "%CHROME%" --remote-debugging-port=%PORT% --user-data-dir="%PROFILE%" --no-first-run --no-default-browser-check --disable-session-crashed-bubble --hide-crash-restore-bubble --window-size=1280,840 --window-position=40,40 --disable-gpu "%POKER%"
 
 set /a tries=0
 :wait
@@ -41,7 +42,7 @@ powershell -NoProfile -Command "try { (Invoke-WebRequest -UseBasicParsing http:/
 if not errorlevel 1 goto ready
 if %tries% GEQ 30 (
   echo Chrome did not open port %PORT% in time.
-  echo Close every Chrome window that was started by these scripts, then run once more.
+  echo Close every Chrome window, then run once more.
   exit /b 1
 )
 timeout /t 1 /nobreak >nul
@@ -49,6 +50,11 @@ goto wait
 
 :ready
 echo Chrome remote debugging is up: http://127.0.0.1:%PORT%/json/version
-echo Look at the address bar: it must be %POKER%
-echo The yellow 247 GAMES art is the game IFRAME, not a redirect.
+echo.
+echo === Debug Chrome tabs (this is the proof) ===
+powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0list-chrome-tabs.ps1"
+if errorlevel 1 exit /b 1
+echo.
+echo If the yellow 247 GAMES art is UNDER a 247 FREE POKER header, that is the homepage iframe.
+echo Isolated frame.html has NO site header and the tab title is 247 Game Frame.
 exit /b 0

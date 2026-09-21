@@ -95,8 +95,13 @@ function render() {
   $("empty").hidden = true;
   $("screenshot").hidden = false;
   $("screenshot").src = `data:image/jpeg;base64,${page.screenshot}`;
-  $("url").textContent = page.url;
-  $("page-title").textContent = page.title;
+  const isolated = /247freepoker\.com/i.test(page.url || "") && /frame\.html/i.test(page.url || "");
+  $("url").textContent = isolated
+    ? `WRONG TAB isolated loader · ${page.url}`
+    : page.url;
+  $("page-title").textContent = isolated
+    ? "Isolated game/frame.html (static loader)"
+    : page.title;
   $("action-count").textContent = `${state.elements.length} elements`;
   const chosen = page.actions.find((a) => a.id === d?.choice);
   $("choice-title").textContent = d

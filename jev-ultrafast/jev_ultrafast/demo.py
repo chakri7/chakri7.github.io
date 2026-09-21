@@ -53,7 +53,7 @@ def command(name, body):
         close_browser()
         start_url = {
             "flights": "https://www.google.com/travel/flights?hl=en",
-            "poker": "https://www.247freepoker.com/game/frame.html",
+            "poker": "https://www.247freepoker.com/",
         }.get(scenario, f"{ORIGIN}/fixture.html?scenario={scenario}")
         AGENT = Agent(
             start_url,

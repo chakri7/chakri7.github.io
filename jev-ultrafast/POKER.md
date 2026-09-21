@@ -1,23 +1,26 @@
 # 247 Free Poker on Jev Ultrafast
 
-This tree is [Browser Use’s Jev Ultrafast](https://github.com/browser-use/jev-ultrafast) plus a poker scenario aimed at the **same-origin game frame**, not the marketing page.
+This tree is [Browser Use’s Jev Ultrafast](https://github.com/browser-use/jev-ultrafast) plus a poker scenario for the **live site**, not the isolated game frame.
 
 ## What the site actually is
 
-`https://www.247freepoker.com/` embeds the table in:
+`https://www.247freepoker.com/` is the real player. It embeds:
 
 ```html
 <iframe id="app-player-cjs-frame" src="game/frame.html">
 ```
 
-`game/frame.html` loads `js/game.js`, which is **CreateJS**. The table, cards, and Fold / Call / Raise controls are drawn on a `<canvas>` inside `#game`. They are not HTML buttons. The only real DOM click on that frame is `#pause-overlay` (“Press here to play!”).
+`game/frame.html` is **not** a playable page by itself. Its boot script does `window.parent.games247.gameSupport.ready(...)`, which loads `js/game.js`. Opened as a top-level URL, `parent.games247` is missing, so CreateJS never starts and you only see the static “247 GAMES / LOADING…” art.
 
-Jev Ultrafast’s default snapshot only indexes `a, button, input, …`. Upstream also states that **canvas is outside the MVP**. This fork:
+The table, cards, and Fold / Call / Raise are still a **CreateJS canvas** after boot. They are not HTML buttons. `#pause-overlay` (“Press here to play!”) is the DOM click inside the iframe.
 
-1. Starts the inspector on `https://www.247freepoker.com/game/frame.html` (avoids the ad-heavy parent and the iframe).
-2. Indexes `#pause-overlay` and `canvas` as click targets so the first gate is visible in the action table.
+This fork:
 
-That is enough to **see the table and click Play**. It is **not** enough for Jev to choose Fold vs Call: those labels never appear as DOM options. The next step after this dump is on-device OCR of the canvas (TipTour / typesafe-computer-use), not more DOM scraping.
+1. Starts the inspector on `https://www.247freepoker.com/` so the parent handshake can run.
+2. Snapshots **same-origin iframes** first (the game), then the outer page.
+3. Indexes `#pause-overlay` and `canvas` as click targets.
+
+Jev still cannot rank Fold vs Call from DOM. That needs canvas OCR after the table is actually running.
 
 ## Windows: run everything
 

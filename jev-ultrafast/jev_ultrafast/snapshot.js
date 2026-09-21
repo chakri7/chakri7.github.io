@@ -13,7 +13,7 @@
     if (!e || seen.has(e)) return '';
     seen.add(e);
     const referenced=(e.getAttribute('aria-labelledby')||'').split(/\s+/)
-      .map(id=>name(document.getElementById(id),seen)).filter(Boolean).join(' ');
+      .map(id=>name((e.ownerDocument||document).getElementById(id),seen)).filter(Boolean).join(' ');
     return referenced || e.getAttribute('aria-label') ||
       [...(e.labels||[])].map(l=>name(l,seen)).filter(Boolean).join(' ') ||
       (['button','submit','reset'].includes(e.type) ? e.value : '') || e.getAttribute('alt') ||
@@ -56,35 +56,47 @@
       e.getAttribute('href'),scope?.innerText?.slice(0,6000)||''];
   };
   const actions=[];
-  for (const e of document.querySelectorAll(selector)) {
-    if (!safe(e) || !visible(e) || e.matches(':disabled') || e.closest('[aria-disabled="true"]')) continue;
-    const r=e.getBoundingClientRect(), x=r.x+r.width/2, y=r.y+r.height/2, rname=role(e);
-    if (!rname || r.width<=0 || r.height<=0 || x<0 || y<0 || x>=innerWidth || y>=innerHeight) continue;
-    if (rname==='gridcell' && e.querySelector('button,[role="button"]')) continue;
-    const label = e.tagName === 'CANVAS'
-      ? (name(e) || 'Game canvas (CreateJS table; Fold/Call/Raise are pixels, not DOM)')
-      : (name(e) || rname);
-    const base={node:identity(e),role:rname,label,
-      rect:{x:r.x,y:r.y,w:r.width,h:r.height}};
-    for (const key of ['checked','selected','expanded']) {
-      const value=e.getAttribute('aria-'+key);
-      if (value!==null) base[key]=value;
+  const collect = (root, ox, oy) => {
+    for (const e of root.querySelectorAll(selector)) {
+      if (!safe(e) || !visible(e) || e.matches(':disabled') || e.closest('[aria-disabled="true"]')) continue;
+      const r=e.getBoundingClientRect(), x=r.x+ox+r.width/2, y=r.y+oy+r.height/2, rname=role(e);
+      if (!rname || r.width<=0 || r.height<=0 || x<0 || y<0 || x>=innerWidth || y>=innerHeight) continue;
+      if (rname==='gridcell' && e.querySelector('button,[role="button"]')) continue;
+      const label = e.tagName === 'CANVAS'
+        ? (name(e) || 'Poker table canvas (CreateJS; betting controls are painted, not HTML)')
+        : (name(e) || rname);
+      const base={node:identity(e),role:rname,label,
+        rect:{x:r.x+ox,y:r.y+oy,w:r.width,h:r.height}};
+      for (const key of ['checked','selected','expanded']) {
+        const value=e.getAttribute('aria-'+key);
+        if (value!==null) base[key]=value;
+      }
+      if (['checkbox','radio'].includes(e.type)) base.checked=String(e.checked);
+      if (e.tagName==='SELECT') {
+        for (const o of e.options) if (!o.selected && !o.disabled && !o.closest('optgroup[disabled]'))
+          actions.push({...base,kind:'select',value:o.value,
+            current_value:[...e.selectedOptions].map(o=>o.label).join(', '),label:base.label+' → '+o.label});
+      } else {
+        const editable=!e.readOnly && e.getAttribute('aria-readonly')!=='true' &&
+          (['textbox','searchbox','spinbutton'].includes(rname) ||
+            (rname==='combobox' && ['INPUT','TEXTAREA'].includes(e.tagName)));
+        const value='value' in e ? String(e.value) :
+          e.isContentEditable || rname==='combobox' ? e.innerText.trim() : '';
+        actions.push({...base,kind:editable?'fill':'click',value});
+        if (editable) actions.push({...base,kind:'click',value,label:'Open '+base.label});
+      }
     }
-    if (['checkbox','radio'].includes(e.type)) base.checked=String(e.checked);
-    if (e.tagName==='SELECT') {
-      for (const o of e.options) if (!o.selected && !o.disabled && !o.closest('optgroup[disabled]'))
-        actions.push({...base,kind:'select',value:o.value,
-          current_value:[...e.selectedOptions].map(o=>o.label).join(', '),label:base.label+' → '+o.label});
-    } else {
-      const editable=!e.readOnly && e.getAttribute('aria-readonly')!=='true' &&
-        (['textbox','searchbox','spinbutton'].includes(rname) ||
-          (rname==='combobox' && ['INPUT','TEXTAREA'].includes(e.tagName)));
-      const value='value' in e ? String(e.value) :
-        e.isContentEditable || rname==='combobox' ? e.innerText.trim() : '';
-      actions.push({...base,kind:editable?'fill':'click',value});
-      if (editable) actions.push({...base,kind:'click',value,label:'Open '+base.label});
-    }
+  };
+  // Game frame first: 247 Free Poker only boots CreateJS when embedded in the parent page.
+  for (const frame of document.querySelectorAll('iframe')) {
+    try {
+      const doc=frame.contentDocument;
+      if (!doc?.body) continue;
+      const fr=frame.getBoundingClientRect();
+      collect(doc, fr.x, fr.y);
+    } catch (err) {}
   }
+  collect(document, 0, 0);
   const words=[], walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
   const range=document.createRange(); let node,length=0;
   while ((node=walker.nextNode()) && length<6000) {

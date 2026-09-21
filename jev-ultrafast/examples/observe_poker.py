@@ -13,7 +13,7 @@ from pathlib import Path
 from jev_ultrafast import Agent
 from jev_ultrafast.demo import load_environment
 
-POKER_FRAME = "https://www.247freepoker.com/game/frame.html"
+POKER_SITE = "https://www.247freepoker.com/"
 GOAL = (
     "Play 247 Free Poker. Dismiss the play overlay if it is visible. "
     "Then click Fold, Check, Call, or Raise when it is the hero seat turn. "
@@ -25,10 +25,17 @@ def main() -> None:
     load_environment()
     output = Path("artifacts/poker-observe") / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     output.mkdir(parents=True, exist_ok=True)
-    with Agent(POKER_FRAME, GOAL, screenshots=False) as agent:
-        time.sleep(8)
+    with Agent(POKER_SITE, GOAL, screenshots=False) as agent:
+        time.sleep(15)
         page = agent.browser.observe(screenshot=False)
-        play = next((a for a in page.get("actions", []) if a.get("kind") == "click"), None)
+        play = next(
+            (
+                a
+                for a in page.get("actions", [])
+                if a.get("kind") == "click" and "play" in (a.get("label") or "").lower()
+            ),
+            None,
+        )
         if play and "play" in (play.get("label") or "").lower():
             try:
                 agent.browser.act(play, page)

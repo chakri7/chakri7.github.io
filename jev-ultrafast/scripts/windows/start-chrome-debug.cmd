@@ -1,11 +1,11 @@
 @echo off
 setlocal EnableExtensions
-rem Open Google Chrome with CDP on 9222 using a dedicated profile.
-rem A dedicated profile is required: a Chrome that was already running without
-rem --remote-debugging-port cannot be retrofitted.
+rem Dedicated CDP Chrome. Kill leftover debug Chrome first — re-running without
+rem that leaves the old 247 Game Frame tab in front.
 
 set "PORT=9222"
 set "PROFILE=%TEMP%\chrome-jev-debug"
+set "POKER=https://www.247freepoker.com/"
 set "CHROME="
 
 if exist "%ProgramFiles%\Google\Chrome\Application\chrome.exe" set "CHROME=%ProgramFiles%\Google\Chrome\Application\chrome.exe"
@@ -17,17 +17,22 @@ if not defined CHROME (
   exit /b 1
 )
 
-if not exist "%PROFILE%" mkdir "%PROFILE%"
-del /q "%PROFILE%\Default\Current Session" 2>nul
-del /q "%PROFILE%\Default\Current Tabs" 2>nul
-del /q "%PROFILE%\Default\Last Session" 2>nul
-del /q "%PROFILE%\Default\Last Tabs" 2>nul
+echo Killing leftover Chrome that used profile chrome-jev-debug
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Get-CimInstance Win32_Process | Where-Object { $_.Name -match 'chrome' -and $_.CommandLine -and ($_.CommandLine -like '*chrome-jev-debug*') } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue }"
+timeout /t 2 /nobreak >nul
+
+if exist "%PROFILE%" (
+  echo Wiping debug profile %PROFILE%
+  rmdir /s /q "%PROFILE%"
+)
+mkdir "%PROFILE%"
 
 echo Starting Chrome debugging on port %PORT%
+echo Opening %POKER%  ^(not game/frame.html^)
 echo Profile: %PROFILE%
 echo Binary: %CHROME%
 
-start "Chrome Jev Debug" "%CHROME%" --remote-debugging-port=%PORT% --user-data-dir="%PROFILE%" --no-first-run --no-default-browser-check --disable-session-crashed-bubble --hide-crash-restore-bubble --disable-gpu about:blank
+start "Chrome Jev Debug" "%CHROME%" --remote-debugging-port=%PORT% --user-data-dir="%PROFILE%" --no-first-run --no-default-browser-check --disable-session-crashed-bubble --hide-crash-restore-bubble --disable-gpu "%POKER%"
 
 set /a tries=0
 :wait
@@ -36,6 +41,7 @@ powershell -NoProfile -Command "try { (Invoke-WebRequest -UseBasicParsing http:/
 if not errorlevel 1 goto ready
 if %tries% GEQ 30 (
   echo Chrome did not open port %PORT% in time.
+  echo Close every Chrome window that was started by these scripts, then run once more.
   exit /b 1
 )
 timeout /t 1 /nobreak >nul
@@ -43,4 +49,6 @@ goto wait
 
 :ready
 echo Chrome remote debugging is up: http://127.0.0.1:%PORT%/json/version
+echo Look at the address bar: it must be %POKER%
+echo The yellow 247 GAMES art is the game IFRAME, not a redirect.
 exit /b 0

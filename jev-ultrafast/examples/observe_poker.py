@@ -11,16 +11,11 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from jev_ultrafast import Agent
-from jev_ultrafast.browser import POKER_HOME, poker_start_url
-from jev_ultrafast.demo import load_environment
+from jev_ultrafast.browser import POKER_HOME, _is_isolated_poker_frame, poker_start_url
+from jev_ultrafast.demo import POKER_GOAL, load_environment
 
 POKER_SITE = poker_start_url(POKER_HOME)
-GOAL = (
-    "Play 247 Free Poker. Stay on https://www.247freepoker.com/ — never open "
-    "game/frame.html as a top-level page. Dismiss the play overlay if it is visible. "
-    "Then click Fold, Check, Call, or Raise when it is the hero seat turn. "
-    "Stop after one betting action. Do not deposit or leave the free table."
-)
+GOAL = POKER_GOAL
 
 
 def main() -> None:
@@ -74,6 +69,12 @@ def main() -> None:
                 for action in actions
             ),
         }
+        if _is_isolated_poker_frame(page.get("url")):
+            raise SystemExit(
+                "Observed isolated game/frame.html. The live table is the homepage iframe, "
+                "not this loader tab."
+            )
+        print(f"PARENT {page.get('url')}  (iframe may still be game/frame.html)", flush=True)
         (output / "actions.json").write_text(json.dumps(report, indent=2))
         if page.get("screenshot"):
             import base64

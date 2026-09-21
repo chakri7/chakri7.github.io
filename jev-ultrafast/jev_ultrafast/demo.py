@@ -19,6 +19,12 @@ ORIGIN = f"http://127.0.0.1:{PORT}"
 TOKEN = secrets.token_urlsafe(32)
 LOCK = threading.Lock()
 AGENT = None
+POKER_GOAL = (
+    "Play 247 Free Poker. Stay on https://www.247freepoker.com/ — never open "
+    "game/frame.html as a top-level page. Dismiss the play overlay if it is visible. "
+    "Then click Fold, Check, Call, or Raise when it is the hero seat turn. "
+    "Stop after one betting action. Do not deposit or leave the free table."
+)
 
 
 def load_environment():
@@ -137,6 +143,23 @@ def main():
     atexit.register(close_browser)
     server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     print(f"Jev Ultrafast: {ORIGIN}", flush=True)
+    if os.environ.get("JEV_AUTOSTART", "").strip().lower() == "poker":
+        def boot():
+            try:
+                with LOCK:
+                    command("reset", {"scenario": "poker", "goal": POKER_GOAL})
+                page = AGENT.snapshot().get("page") if AGENT else None
+                print(
+                    "Autostarted poker. Address bar must be "
+                    f"{POKER_HOME} (iframe src may still be game/frame.html).",
+                    flush=True,
+                )
+                if page:
+                    print(f"Observed url={page.get('url')} title={page.get('title')}", flush=True)
+            except Exception as error:
+                print(f"Poker autostart failed: {error}", flush=True)
+
+        threading.Thread(target=boot, daemon=True).start()
     try:
         server.serve_forever()
     except KeyboardInterrupt:

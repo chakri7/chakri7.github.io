@@ -26,9 +26,11 @@ This fork:
 
 Jev still cannot rank Fold vs Call from DOM. That needs canvas OCR after the table is actually running.
 
-If you still see the static “247 GAMES / LOADING…” art, you are on isolated `frame.html`. Close that tab. Re-run `run-windows.cmd` (it prints the git commit) and Start demo from the inspector — the URL bar in the inspector must be `https://www.247freepoker.com/`.
+If the yellow “247 GAMES / LOADING…” art fills the **iframe** under a `247 FREE POKER` header, that is the live site. Check the **address bar**: it must be `https://www.247freepoker.com/` with no `game/frame.html`. A tab whose **title** is `247 Game Frame` is the dead loader — close it.
 
-## Windows: run everything
+Do not re-run bootstrap in a loop. One run after this commit is enough: it **kills** leftover debug Chrome, **wipes** `%TEMP%\chrome-jev-debug`, and opens the homepage in front.
+
+## Windows: run once
 
 You do **not** already have `chakri7.github.io` under your user folder until you clone it. From PowerShell in any directory:
 
@@ -51,11 +53,12 @@ Install [Git](https://git-scm.com/download/win) and [uv](https://docs.astral.sh/
 
 That script:
 
-1. Starts **Google Chrome in debugging mode** (`--remote-debugging-port=9222`) with a dedicated profile `%TEMP%\chrome-jev-debug` (your everyday Chrome can stay closed or ignored).
+1. Kills leftover debug Chrome, wipes `%TEMP%\chrome-jev-debug`, starts Chrome on **`https://www.247freepoker.com/`** (`--remote-debugging-port=9222`).
 2. `uv sync`
 3. `uv run browser-harness --doctor`
-4. `uv run python examples\observe_poker.py` (no TypeSafe key)
-5. Starts `uv run jev` and opens `http://127.0.0.1:8766`
+4. Starts `uv run jev` with **poker autostart** (no Start demo click) and opens `http://127.0.0.1:8766/?scenario=poker`
+
+`examples\observe_poker.py` is optional (`scripts\windows\observe-poker.cmd`). It is not in the default chain.
 
 Install [uv](https://docs.astral.sh/uv/) first if needed:
 
@@ -73,7 +76,7 @@ Pieces, if you do not want the full chain:
 | `scripts\windows\observe-poker.cmd` | Action-table dump |
 | `scripts\windows\run-inspector.cmd` | Inspector only (Chrome debug must already be up) |
 
-The inspector **defaults to poker**. **Start demo** → **Choose next** → **Execute choice**. Do not type `game/frame.html` into Chrome.
+The inspector **autostarts poker**. **Choose next** → **Execute choice**. Address bar: homepage. Do not type `game/frame.html`.
 
 ## macOS / Linux inspector
 

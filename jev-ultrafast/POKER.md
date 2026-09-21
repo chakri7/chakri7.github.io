@@ -12,6 +12,8 @@ This tree is [Browser Use’s Jev Ultrafast](https://github.com/browser-use/jev-
 
 `game/frame.html` is **not** a playable page by itself. Its boot script does `window.parent.games247.gameSupport.ready(...)`, which loads `js/game.js`. Opened as a top-level URL, `parent.games247` is missing, so CreateJS never starts and you only see the static “247 GAMES / LOADING…” art.
 
+Checked live (HTTP + CDP, 2026-09-21): **the homepage does not redirect**. `https://www.247freepoker.com/` stays 200 with no `Location` header and no `location.assign` / `top.location` in page scripts. For 24s after load, `location.href` remained the homepage. The site **embeds** the game (`<iframe id="app-player-cjs-frame" src="game/frame.html?v=…">`). That iframe uses the same yellow loader art, then `game.js` paints PLAY. A leftover Chrome tab titled **247 Game Frame** is a previous top-level open of `frame.html`, not a redirect. The agent now closes those stray tabs and brings the homepage tab to the front.
+
 The table, cards, and Fold / Call / Raise are still a **CreateJS canvas** after boot. They are not HTML buttons. `#pause-overlay` (“Press here to play!”) is the DOM click inside the iframe.
 
 This fork:

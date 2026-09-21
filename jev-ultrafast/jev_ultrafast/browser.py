@@ -61,7 +61,7 @@ class Browser:
                       const f = document.querySelector('#app-player-cjs-frame, iframe');
                       try {
                         const doc = f && f.contentDocument;
-                        return !!(doc && (doc.querySelector('#pause-overlay, canvas')));
+                        return !!(doc && doc.querySelector('canvas'));
                       } catch (e) { return false; }
                     })()"""
                 ):
@@ -83,7 +83,21 @@ class Browser:
             self._wait_ready(15)
             href = POKER_HOME
         if "247freepoker.com" in href.lower():
+            self._close_stray_isolated_frames()
+            cdp("Target.activateTarget", targetId=self.target)
             self._wait_poker_iframe(20)
+
+    def _close_stray_isolated_frames(self):
+        """Isolated top-level game/frame.html tabs are leftover loaders, not the live table."""
+        try:
+            infos = cdp("Target.getTargets").get("targetInfos") or []
+        except Exception:
+            return
+        for info in infos:
+            if info.get("targetId") == self.target or info.get("type") != "page":
+                continue
+            if _is_isolated_poker_frame(info.get("url")):
+                cdp("Target.closeTarget", targetId=info["targetId"])
 
     def call(self, method, **params):
         return cdp(method, session_id=self.session, **params)

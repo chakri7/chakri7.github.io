@@ -319,6 +319,13 @@ def test_isolated_poker_frame_is_rewritten_to_homepage():
     assert poker_start_url("https://www.google.com/travel/flights") == "https://www.google.com/travel/flights"
 
 
+def test_homepage_is_not_treated_as_isolated_frame():
+    from jev_ultrafast.browser import _is_isolated_poker_frame
+
+    assert not _is_isolated_poker_frame("https://www.247freepoker.com/")
+    assert _is_isolated_poker_frame("https://www.247freepoker.com/game/frame.html")
+
+
 def test_navigation_during_prediction_reobserves_without_action(runner):
     runner.state["browser"].fresh.side_effect = StalePage("Document navigating")
     runner.command("tick")

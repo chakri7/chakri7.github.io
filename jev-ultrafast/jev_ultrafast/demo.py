@@ -5,9 +5,14 @@ import json
 import os
 import secrets
 import threading
+import time
+import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
+
+from browser_harness.admin import ensure_daemon
+from browser_harness.helpers import cdp
 
 from .agent import Agent
 from .browser import POKER_HOME, poker_start_url
@@ -39,6 +44,23 @@ def load_environment():
 def response_state():
     state = AGENT.snapshot() if AGENT else {"page": None, "status": "idle", "history": [], "decision": None}
     return {**state, "text_model": os.environ.get("TEXT_MODEL", "deepseek-chat"), "max_steps": MAX_STEPS}
+
+
+def show_inspector():
+    """Put Browser Use in front. Poker stays in a background CDP tab."""
+    ensure_daemon()
+    inspector = cdp("Target.createTarget", url=f"{ORIGIN}/?scenario=poker", background=False)["targetId"]
+    cdp("Target.activateTarget", targetId=inspector)
+    try:
+        for info in cdp("Target.getTargets").get("targetInfos") or []:
+            if info.get("targetId") == inspector or info.get("type") != "page":
+                continue
+            url = info.get("url") or ""
+            if url in {"about:blank", "chrome://newtab/", "chrome://new-tab-page/"}:
+                cdp("Target.closeTarget", targetId=info["targetId"])
+    except Exception:
+        pass
+    return inspector
 
 
 def close_browser():
@@ -146,16 +168,22 @@ def main():
     if os.environ.get("JEV_AUTOSTART", "").strip().lower() == "poker":
         def boot():
             try:
+                for _ in range(50):
+                    try:
+                        urllib.request.urlopen(f"{ORIGIN}/api/state", timeout=0.3)
+                        break
+                    except Exception:
+                        time.sleep(0.1)
+                print(f"Opening Browser Use inspector {ORIGIN}/?scenario=poker", flush=True)
+                show_inspector()
                 with LOCK:
                     command("reset", {"scenario": "poker", "goal": POKER_GOAL})
                 page = AGENT.snapshot().get("page") if AGENT else None
                 print(
-                    "Autostarted poker. Address bar must be "
-                    f"{POKER_HOME} (iframe src may still be game/frame.html).",
+                    "Poker is running inside Browser Use (screenshot on 127.0.0.1:8766). "
+                    f"Controlled page url={page.get('url') if page else None}",
                     flush=True,
                 )
-                if page:
-                    print(f"Observed url={page.get('url')} title={page.get('title')}", flush=True)
             except Exception as error:
                 print(f"Poker autostart failed: {error}", flush=True)
 

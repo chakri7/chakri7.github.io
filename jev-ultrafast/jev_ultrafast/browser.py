@@ -36,14 +36,13 @@ class Browser:
     def __init__(self, url):
         ensure_daemon()
         start = poker_start_url(url)
-        poker = "247freepoker.com" in (start or "")
-        # Poker must be the front tab. A background tab leaves Chrome showing leftover frame.html.
-        self.target = cdp("Target.createTarget", url="about:blank", background=not poker)["targetId"]
+        # Keep the live table in a background tab. The user watches Browser Use (127.0.0.1:8766).
+        self.target = cdp("Target.createTarget", url="about:blank", background=True)["targetId"]
         self.session = cdp("Target.attachToTarget", targetId=self.target, flatten=True)["sessionId"]
         self.call("Emulation.setDeviceMetricsOverride", width=1120, height=780, deviceScaleFactor=1, mobile=False)
         # Keep rAF/menus rendering in an owned background tab, without activating the user's Chrome tab.
         self.call("Emulation.setFocusEmulationEnabled", enabled=True)
-        self.open_page(poker_start_url(url))
+        self.open_page(start)
 
     def _wait_ready(self, seconds=15):
         deadline = time.monotonic() + seconds
@@ -87,32 +86,7 @@ class Browser:
             href = POKER_HOME
         if "247freepoker.com" in href.lower():
             self._close_stray_isolated_frames()
-            cdp("Target.activateTarget", targetId=self.target)
             self._wait_poker_iframe(20)
-            self._mark_poker_homepage()
-
-    def _mark_poker_homepage(self):
-        """Green bar + tab title so the iframe is not mistaken for a redirect."""
-        try:
-            self.evaluate(
-                """(() => {
-                  document.title = 'JEV LIVE POKER · homepage';
-                  let b = document.getElementById('jev-poker-banner');
-                  if (!b) {
-                    b = document.createElement('div');
-                    b.id = 'jev-poker-banner';
-                    document.documentElement.appendChild(b);
-                  }
-                  b.textContent = 'JEV live homepage  ' + location.href
-                    + '  |  the yellow/green game below is an iframe (game/frame.html). That is normal.';
-                  b.setAttribute('style',
-                    'position:fixed;top:0;left:0;right:0;z-index:2147483647;background:#39ff14;color:#111;'
-                    + 'font:700 15px/1.35 sans-serif;padding:10px 12px;text-align:center;pointer-events:none');
-                  return location.href;
-                })()"""
-            )
-        except StalePage:
-            pass
 
     def _close_stray_isolated_frames(self):
         """Isolated top-level game/frame.html tabs are leftover loaders, not the live table."""

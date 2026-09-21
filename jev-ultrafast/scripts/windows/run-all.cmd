@@ -1,6 +1,6 @@
 @echo off
 setlocal EnableExtensions
-rem Windows: one debug Chrome on the poker homepage, then autostart the inspector.
+rem Windows: debug Chrome, then Browser Use inspector with poker inside it.
 cd /d "%~dp0..\.."
 
 echo Poker URL is https://www.247freepoker.com/ - never game/frame.html
@@ -37,13 +37,10 @@ call uv run browser-harness --doctor
 echo doctor exit %ERRORLEVEL%
 
 echo.
-echo === 4/4 Jev inspector ^(autostarts poker, no extra Start demo click^) ===
+echo === 4/4 Browser Use inspector ===
+echo Watch http://127.0.0.1:8766  -- that is Browser Use x TypeSafe.
+echo Poker is the LIVE screenshot inside that inspector, not a raw 247freepoker tab.
 set JEV_AUTOSTART=poker
-echo Address bar in the debug Chrome must stay https://www.247freepoker.com/
-echo game/frame.html inside that page is the iframe. That is the real table.
-echo Inspector: http://127.0.0.1:8766/?scenario=poker
-echo Inspector will open in the SAME debug Chrome, not your everyday Chrome.
-start "" cmd /c "%~dp0open-inspector.cmd"
 echo This window stays on uv run jev. Ctrl+C stops the inspector.
 call uv run jev
 exit /b %ERRORLEVEL%

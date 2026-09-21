@@ -14,9 +14,7 @@ This tree is [Browser Use’s Jev Ultrafast](https://github.com/browser-use/jev-
 
 Checked live (HTTP + CDP, 2026-09-21): **the homepage does not redirect**. `https://www.247freepoker.com/` stays 200 with no `Location` header and no `location.assign` / `top.location` in page scripts. For 24s after load, `location.href` remained the homepage. The site **embeds** the game (`<iframe id="app-player-cjs-frame" src="game/frame.html?v=…">`). That iframe uses the same yellow loader art, then `game.js` paints PLAY.
 
-If Chrome shows a **247 FREE POKER** header plus yellow/green game art, you are already on the homepage. Isolated `game/frame.html` has **no** site header and the tab title is **247 Game Frame**. After autostart, a **lime-green JEV banner** is injected on the homepage so those two cannot be confused.
-
-The Windows launcher **closes every Chrome window**, wipes `%TEMP%\chrome-jev-debug`, prints the debug tab list (must include the homepage), and opens the inspector in that same profile.
+The Windows launcher starts **Chrome in debug mode on about:blank**, then **Browser Use** at `http://127.0.0.1:8766/?scenario=poker`. Poker is a **screenshot inside that inspector**, not a raw Chrome tab of 247freepoker. Do not watch the 247 site window.
 
 The table, cards, and Fold / Call / Raise are still a **CreateJS canvas** after boot. They are not HTML buttons. `#pause-overlay` (“Press here to play!”) is the DOM click inside the iframe.
 
@@ -30,9 +28,9 @@ This fork:
 
 Jev still cannot rank Fold vs Call from DOM. That needs canvas OCR after the table is actually running.
 
-If the yellow “247 GAMES / LOADING…” art fills the **iframe** under a `247 FREE POKER` header, that is the live site. Check the **address bar**: it must be `https://www.247freepoker.com/` with no `game/frame.html`. A tab whose **title** is `247 Game Frame` is the dead loader — close it.
+Watch **http://127.0.0.1:8766** (Browser Use). That viewport is the live table. A raw `247freepoker.com` tab is only the hidden CDP target.
 
-Do not re-run bootstrap in a loop. One run after this commit is enough: it **kills** leftover debug Chrome, **wipes** `%TEMP%\chrome-jev-debug`, and opens the homepage in front.
+Do not re-run bootstrap looking at Chrome's 247 tab. One run after this commit opens **about:blank**, then the inspector.
 
 ## Windows: run once
 
@@ -57,10 +55,10 @@ Install [Git](https://git-scm.com/download/win) and [uv](https://docs.astral.sh/
 
 That script:
 
-1. Kills leftover debug Chrome, wipes `%TEMP%\chrome-jev-debug`, starts Chrome on **`https://www.247freepoker.com/`** (`--remote-debugging-port=9222`).
+1. Closes Chrome, wipes `%TEMP%\chrome-jev-debug`, starts debug Chrome on **about:blank** (`--remote-debugging-port=9222`).
 2. `uv sync`
 3. `uv run browser-harness --doctor`
-4. Starts `uv run jev` with **poker autostart** (no Start demo click) and opens `http://127.0.0.1:8766/?scenario=poker`
+4. `uv run jev` with poker autostart and **opens Browser Use** (`http://127.0.0.1:8766/?scenario=poker`) in front. The 247 table is the inspector screenshot.
 
 `examples\observe_poker.py` is optional (`scripts\windows\observe-poker.cmd`). It is not in the default chain.
 

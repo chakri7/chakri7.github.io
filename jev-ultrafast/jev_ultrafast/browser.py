@@ -190,5 +190,14 @@ def browser_operation(request):
         raise StalePage("Document is navigating")
     info["fingerprint"] = fingerprint(info)
     if request.get("screenshot", True):
-        info["screenshot"] = call("Page.captureScreenshot", format="jpeg", quality=72)["data"]
+        try:
+            info["screenshot"] = cdp(
+                "Page.captureScreenshot",
+                session_id=session,
+                format="jpeg",
+                quality=72,
+                _response_timeout=60,
+            )["data"]
+        except TimeoutError:
+            info["screenshot"] = None
     return info

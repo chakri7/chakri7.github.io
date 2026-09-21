@@ -21,12 +21,24 @@ That is enough to **see the table and click Play**. It is **not** enough for Jev
 
 ## Windows: run everything
 
-Double-click or from cmd:
+You do **not** already have `chakri7.github.io` under your user folder until you clone it. From PowerShell in any directory:
 
-```bat
-cd jev-ultrafast\scripts\windows
-run-all.cmd
+```powershell
+irm https://raw.githubusercontent.com/chakri7/chakri7.github.io/cursor/jev-ultrafast-poker-4ef6/bootstrap-windows.ps1 | iex
 ```
+
+Or, equivalently:
+
+```powershell
+Set-Location $HOME
+git clone -b cursor/jev-ultrafast-poker-4ef6 https://github.com/chakri7/chakri7.github.io.git
+Set-Location .\chakri7.github.io
+cmd /c .\run-windows.cmd
+```
+
+That clones into `$HOME\chakri7.github.io` (on your PC that is `C:\Users\2024\chakri7.github.io` **after** clone, not before), starts Chrome with `--remote-debugging-port=9222`, then the inspector.
+
+Install [Git](https://git-scm.com/download/win) and [uv](https://docs.astral.sh/uv/) first if the script says they are missing.
 
 That script:
 

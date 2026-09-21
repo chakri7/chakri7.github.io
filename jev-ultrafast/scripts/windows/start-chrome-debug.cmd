@@ -18,12 +18,16 @@ if not defined CHROME (
 )
 
 if not exist "%PROFILE%" mkdir "%PROFILE%"
+del /q "%PROFILE%\Default\Current Session" 2>nul
+del /q "%PROFILE%\Default\Current Tabs" 2>nul
+del /q "%PROFILE%\Default\Last Session" 2>nul
+del /q "%PROFILE%\Default\Last Tabs" 2>nul
 
 echo Starting Chrome debugging on port %PORT%
 echo Profile: %PROFILE%
 echo Binary: %CHROME%
 
-start "Chrome Jev Debug" "%CHROME%" --remote-debugging-port=%PORT% --user-data-dir="%PROFILE%" --no-first-run --no-default-browser-check --disable-gpu about:blank
+start "Chrome Jev Debug" "%CHROME%" --remote-debugging-port=%PORT% --user-data-dir="%PROFILE%" --no-first-run --no-default-browser-check --disable-session-crashed-bubble --hide-crash-restore-bubble --disable-gpu about:blank
 
 set /a tries=0
 :wait

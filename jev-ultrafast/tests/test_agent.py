@@ -9,7 +9,7 @@ import pytest
 
 from jev_ultrafast import agent as loop
 from jev_ultrafast import model
-from jev_ultrafast.browser import StalePage, browser_operation, fingerprint
+from jev_ultrafast.browser import POKER_HOME, StalePage, browser_operation, fingerprint, poker_start_url
 
 
 def page():
@@ -310,6 +310,13 @@ def test_text_helper_rejects_invalid_values(monkeypatch, content):
     monkeypatch.setattr(model, "post_json", Mock(return_value={"choices": [{"message": {"content": content}}]}))
     with pytest.raises(ValueError, match="nothing typed"):
         model.field_text({"goal": "Find a flight"})
+
+
+def test_isolated_poker_frame_is_rewritten_to_homepage():
+    assert poker_start_url("https://www.247freepoker.com/game/frame.html") == POKER_HOME
+    assert poker_start_url("https://www.247freepoker.com/game/frame.html?x=1") == POKER_HOME
+    assert poker_start_url("https://www.247freepoker.com/") == "https://www.247freepoker.com/"
+    assert poker_start_url("https://www.google.com/travel/flights") == "https://www.google.com/travel/flights"
 
 
 def test_navigation_during_prediction_reobserves_without_action(runner):

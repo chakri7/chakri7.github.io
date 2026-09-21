@@ -12,6 +12,21 @@ from browser_harness.helpers import cdp
 # Atomically read visible content and controls, preserving actual DOM node identity.
 READ_STATE = Path(__file__).with_name("snapshot.js").read_text()
 MARKER = f"(() => {{ const state={READ_STATE}; return state?.marker ?? null; }})()"
+POKER_HOME = "https://www.247freepoker.com/"
+
+
+def poker_start_url(url):
+    """Isolated game/frame.html is a static loader; only the parent page boots CreateJS."""
+    raw = url or ""
+    if "247freepoker.com" in raw.lower() and "frame.html" in raw.lower():
+        return POKER_HOME
+    return url
+
+
+def _is_isolated_poker_frame(url):
+    raw = (url or "").lower()
+    return "247freepoker.com" in raw and "frame.html" in raw
+
 
 class StalePage(ValueError):
     """A decision no longer refers to the observed page."""
@@ -25,12 +40,50 @@ class Browser:
         self.call("Emulation.setDeviceMetricsOverride", width=1120, height=780, deviceScaleFactor=1, mobile=False)
         # Keep rAF/menus rendering in an owned background tab, without activating the user's Chrome tab.
         self.call("Emulation.setFocusEmulationEnabled", enabled=True)
-        self.call("Page.navigate", url=url)
-        deadline = time.monotonic() + 15
+        self.open_page(poker_start_url(url))
+
+    def _wait_ready(self, seconds=15):
+        deadline = time.monotonic() + seconds
         while time.monotonic() < deadline:
-            if self.evaluate("document.readyState") == "complete":
-                break
+            try:
+                if self.evaluate("document.readyState") == "complete":
+                    return
+            except StalePage:
+                pass
             time.sleep(0.02)
+
+    def _wait_poker_iframe(self, seconds=20):
+        deadline = time.monotonic() + seconds
+        while time.monotonic() < deadline:
+            try:
+                if self.evaluate(
+                    """(() => {
+                      const f = document.querySelector('#app-player-cjs-frame, iframe');
+                      try {
+                        const doc = f && f.contentDocument;
+                        return !!(doc && (doc.querySelector('#pause-overlay, canvas')));
+                      } catch (e) { return false; }
+                    })()"""
+                ):
+                    return
+            except StalePage:
+                pass
+            time.sleep(0.2)
+
+    def open_page(self, url):
+        target = poker_start_url(url)
+        self.call("Page.navigate", url=target)
+        self._wait_ready(15)
+        try:
+            href = self.evaluate("location.href") or ""
+        except StalePage:
+            href = ""
+        if _is_isolated_poker_frame(href):
+            self.call("Page.navigate", url=POKER_HOME)
+            self._wait_ready(15)
+            href = POKER_HOME
+        if "247freepoker.com" in href.lower():
+            self._wait_poker_iframe(20)
 
     def call(self, method, **params):
         return cdp(method, session_id=self.session, **params)
@@ -76,9 +129,13 @@ class Browser:
                 pass
         for attempt in range(10):
             try:
-                return browser_operation(
+                page = browser_operation(
                     {"operation": "observe", "session": self.session, "screenshot": screenshot}
                 )
+                if _is_isolated_poker_frame(page.get("url")):
+                    self.open_page(POKER_HOME)
+                    continue
+                return page
             except StalePage:
                 if attempt == 9:
                     raise

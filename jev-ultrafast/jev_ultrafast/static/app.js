@@ -5,7 +5,7 @@ let state = null,
   automatic = false;
 const goals = {
   flights: 'Find one-way flights from Zurich to London on September 20, 2026, for one adult in economy. Stop when matching flight options are visible. Do not select or book a flight.',
-  poker: 'Play 247 Free Poker. Dismiss the play overlay if it is visible. Then click Fold, Check, Call, or Raise when it is the hero seat turn. Stop after one betting action. Do not deposit or leave the free table.',
+  poker: 'Play 247 Free Poker. Stay on https://www.247freepoker.com/ — never open game/frame.html as a top-level page. Dismiss the play overlay if it is visible. Then click Fold, Check, Call, or Raise when it is the hero seat turn. Stop after one betting action. Do not deposit or leave the free table.',
   travel: 'Find a Design stay in Lisbon with Free cancellation and open Casa Flora.',
   research:
     "Open the article about using finite choices to control browser agents.",
@@ -234,6 +234,11 @@ $("download").addEventListener("click", () => {
   a.click();
   URL.revokeObjectURL(url);
 });
+const initialScenario = new URLSearchParams(location.search).get("scenario") || "poker";
+if (goals[initialScenario]) {
+  $("scenario").value = initialScenario;
+  $("goal").value = goals[initialScenario];
+}
 fetch("/api/state")
   .then((r) => r.json())
   .then((s) => {

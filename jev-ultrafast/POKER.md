@@ -17,10 +17,14 @@ The table, cards, and Fold / Call / Raise are still a **CreateJS canvas** after 
 This fork:
 
 1. Starts the inspector on `https://www.247freepoker.com/` so the parent handshake can run.
-2. Snapshots **same-origin iframes** first (the game), then the outer page.
-3. Indexes `#pause-overlay` and `canvas` as click targets.
+2. If Chrome or an old clone still asks for `game/frame.html`, the browser **rewrites that URL to the homepage**.
+3. Snapshots **same-origin iframes** first (the game), then the outer page.
+4. Indexes `#pause-overlay` and `canvas` as click targets.
+5. Windows `bootstrap-windows.ps1` / `run-windows.cmd` **hard-reset** the clone to `origin/cursor/jev-ultrafast-poker-4ef6` so you are not stuck on the old `frame.html` commit.
 
 Jev still cannot rank Fold vs Call from DOM. That needs canvas OCR after the table is actually running.
+
+If you still see the static “247 GAMES / LOADING…” art, you are on isolated `frame.html`. Close that tab. Re-run `run-windows.cmd` (it prints the git commit) and Start demo from the inspector — the URL bar in the inspector must be `https://www.247freepoker.com/`.
 
 ## Windows: run everything
 
@@ -67,7 +71,7 @@ Pieces, if you do not want the full chain:
 | `scripts\windows\observe-poker.cmd` | Action-table dump |
 | `scripts\windows\run-inspector.cmd` | Inspector only (Chrome debug must already be up) |
 
-In the inspector: **247 Free Poker · real web** → **Start demo** → **Choose next** → **Execute choice**.
+The inspector **defaults to poker**. **Start demo** → **Choose next** → **Execute choice**. Do not type `game/frame.html` into Chrome.
 
 ## macOS / Linux inspector
 
@@ -79,7 +83,7 @@ uv sync
 uv run jev
 ```
 
-Open `http://127.0.0.1:8766`, pick **247 Free Poker · real web**, Start demo.
+Open `http://127.0.0.1:8766/?scenario=poker` and Start demo.
 
 `Choose next` calls TypeSafe. Observing the page does not.
 

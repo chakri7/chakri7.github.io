@@ -11,11 +11,13 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 from jev_ultrafast import Agent
+from jev_ultrafast.browser import POKER_HOME, poker_start_url
 from jev_ultrafast.demo import load_environment
 
-POKER_SITE = "https://www.247freepoker.com/"
+POKER_SITE = poker_start_url(POKER_HOME)
 GOAL = (
-    "Play 247 Free Poker. Dismiss the play overlay if it is visible. "
+    "Play 247 Free Poker. Stay on https://www.247freepoker.com/ — never open "
+    "game/frame.html as a top-level page. Dismiss the play overlay if it is visible. "
     "Then click Fold, Check, Call, or Raise when it is the hero seat turn. "
     "Stop after one betting action. Do not deposit or leave the free table."
 )
@@ -26,7 +28,7 @@ def main() -> None:
     output = Path("artifacts/poker-observe") / datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     output.mkdir(parents=True, exist_ok=True)
     with Agent(POKER_SITE, GOAL, screenshots=False) as agent:
-        time.sleep(15)
+        time.sleep(3)
         page = agent.browser.observe(screenshot=False)
         play = next(
             (
@@ -67,7 +69,8 @@ def main() -> None:
             "action_count": len(actions),
             "actions": actions,
             "has_fold_call_raise_dom": any(
-                any(word in (action.get("label") or "").lower() for word in ("fold", "call", "raise", "check"))
+                "canvas" not in (action.get("label") or "").lower()
+                and any(word in (action.get("label") or "").lower() for word in ("fold", "call", "raise", "check"))
                 for action in actions
             ),
         }

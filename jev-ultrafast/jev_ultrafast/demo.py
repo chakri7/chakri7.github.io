@@ -10,6 +10,7 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from .agent import Agent
+from .browser import POKER_HOME, poker_start_url
 from .questions import MAX_STEPS
 
 ROOT = Path(__file__).parent
@@ -44,7 +45,7 @@ def close_browser():
 def command(name, body):
     global AGENT
     if name == "reset":
-        scenario = body.get("scenario", "flights")
+        scenario = body.get("scenario", "poker")
         if scenario not in {"travel", "research", "flights", "poker"}:
             raise ValueError("Unknown demo scenario")
         goal = body.get("goal", "").strip()
@@ -53,8 +54,9 @@ def command(name, body):
         close_browser()
         start_url = {
             "flights": "https://www.google.com/travel/flights?hl=en",
-            "poker": "https://www.247freepoker.com/",
+            "poker": POKER_HOME,
         }.get(scenario, f"{ORIGIN}/fixture.html?scenario={scenario}")
+        start_url = poker_start_url(start_url)
         AGENT = Agent(
             start_url,
             goal,

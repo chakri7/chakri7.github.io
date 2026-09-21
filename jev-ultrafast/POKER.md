@@ -19,12 +19,48 @@ Jev Ultrafast’s default snapshot only indexes `a, button, input, …`. Upstrea
 
 That is enough to **see the table and click Play**. It is **not** enough for Jev to choose Fold vs Call: those labels never appear as DOM options. The next step after this dump is on-device OCR of the canvas (TipTour / typesafe-computer-use), not more DOM scraping.
 
-## Run the inspector
+## Windows: run everything
+
+Double-click or from cmd:
+
+```bat
+cd jev-ultrafast\scripts\windows
+run-all.cmd
+```
+
+That script:
+
+1. Starts **Google Chrome in debugging mode** (`--remote-debugging-port=9222`) with a dedicated profile `%TEMP%\chrome-jev-debug` (your everyday Chrome can stay closed or ignored).
+2. `uv sync`
+3. `uv run browser-harness --doctor`
+4. `uv run python examples\observe_poker.py` (no TypeSafe key)
+5. Starts `uv run jev` and opens `http://127.0.0.1:8766`
+
+Install [uv](https://docs.astral.sh/uv/) first if needed:
+
+```bat
+powershell -ExecutionPolicy Bypass -c "irm https://astral.sh/uv/install.ps1 | iex"
+```
+
+Put `TYPESAFE_API_KEY` in `jev-ultrafast\.env` before **Choose next**.
+
+Pieces, if you do not want the full chain:
+
+| Script | What it does |
+|---|---|
+| `scripts\windows\start-chrome-debug.cmd` | Chrome debugging only |
+| `scripts\windows\observe-poker.cmd` | Action-table dump |
+| `scripts\windows\run-inspector.cmd` | Inspector only (Chrome debug must already be up) |
+
+In the inspector: **247 Free Poker · real web** → **Start demo** → **Choose next** → **Execute choice**.
+
+## macOS / Linux inspector
 
 ```bash
 cd jev-ultrafast
 cp .env.example .env   # TYPESAFE_API_KEY is required for Choose / Run automatically
 uv sync
+# Chrome must already be running with --remote-debugging-port=9222
 uv run jev
 ```
 
